@@ -1,0 +1,71 @@
+body {
+  margin: 0%;
+  padding: 10%;
+  background:white;
+  min-height:80vh;
+  background-size:cover;
+  padding-top : 0%;
+}
+
+.nav-tag{
+  display : flex;
+  justify-content: space-around;
+  min-height: 10vh;
+  background: rgb(73,79,82);
+  color: white;
+  }
+
+.nav-links{
+  width : 40%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style: none;
+}
+
+.align-center{
+  justify-content: center
+}
+
+.align-right{
+  justify-content: space-around;
+  justify-items: right;
+  
+}
+
+hr.boder-solid{
+  border: 2px solid blueviolet;
+}
+
+hr.boder-dotted{
+  border: 1px dotted blueviolet;
+}
+
+.Container input{ /* You Can Name it what you want*/
+  margin-right:16px;
+}
+
+.Container button{ /* You Can Name it what you want*/
+  margin-right:16px;
+}
+
+button.reset{
+    background-color: red;
+}
+
+.column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+  height: 80px;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+* {
+  box-sizing: border-box;
+}
