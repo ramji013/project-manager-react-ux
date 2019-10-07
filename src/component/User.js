@@ -3,6 +3,9 @@ import '../App.css';
 import * as config from '../config/config';
 import {createData, updateData, deleteData} from '../service/projectmanager';
 import axios from 'axios';
+import {ListGroup} from 'react-bootstrap';
+
+
 
 export default class User extends Component{
 
@@ -12,7 +15,6 @@ export default class User extends Component{
         employeeId: "",
         allUser: [],
         isEditBtnClicked: false,
-        editedIdx: -1,
         searchUser: "",
         filteredData: [],
         allUserBckup: []
@@ -92,7 +94,7 @@ export default class User extends Component{
             isEditBtnClicked: false})
     }
 
-    filterByFirstName = () => {
+    sortByFirstName = () => {
         const {allUser,searchUser} = this.state;
             this.setState({
                 allUserBckup: allUser,
@@ -131,6 +133,11 @@ export default class User extends Component{
 
     render(){
         const {firstName, lastName, employeeId,searchUser,allUser,isEditBtnClicked} = this.state;
+
+        let filterData = allUser.filter((user)=> {
+            return user.firstName.toLowerCase().indexOf(searchUser)!==-1;
+        });
+        
         return(
             <div>
             <div className="align-center">
@@ -158,27 +165,28 @@ export default class User extends Component{
                 <div className="container">
                     <input type="text" name="search" placeholder="search" value={searchUser} onChange={this.updateSearchStateChange}></input>
                     <label>Sort:</label>
-                    <button type="button" onClick={this.filterByFirstName}>First Name</button>
-                    <button type="button" onClick={this.filterByLastName}>Last Name</button>
-                    <button type="button" onClick={this.filterById}>Id</button>
+                    <button type="button" onClick={this.sortByFirstName}>First Name</button>
+                    <button type="button" onClick={this.sortByLastName}>Last Name</button>
+                    <button type="button" onClick={this.sortById}>Id</button>
                 </div>
                 <hr className="boder-dotted"/>
 
                         {
-                            allUser.map((data, idx) => (
+                            filterData.map((data, idx) => (
                                 <div id={data.employeeId}>
-                                    <div className="row"> 
-                                    <div className="column">
-                                        First Name: <label value={data.fistName}>{data.firstName}</label><br/>
-                                        Last Name: <label value={data.lastName}>{data.lastName}</label><br/>
-                                        Employee Id: <label value={data.employeeId}>{data.employeeId}</label>
-                                    </div>
-                                    <div className="column">
+                                  <ListGroup>
+                                      <ListGroup.Item className="column">
+                                          First Name: <label value={data.fistName}>{data.firstName}</label><br/>
+                                          Last Name: <label value={data.lastName}>{data.lastName}</label><br/>
+                                          Employee Id: <label value={data.employeeId}>{data.employeeId}</label>
+                                      </ListGroup.Item>
+                                    
+                                    <ListGroup.Item className="column">
                                         <div><button onClick={this.editUser} id={idx}>Edit</button></div>
                                         <div><button onClick={this.deleteUser} id={idx}>Delete</button></div>
-                                    </div>
+                                    </ListGroup.Item>
                                     <hr className="boder-dotted"/>
-                                </div>
+                                </ListGroup>
                                 </div>
                             )
                             )
