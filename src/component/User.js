@@ -12,20 +12,16 @@ export default class User extends Component{
         employeeId: "",
         allUser: [],
         isEditBtnClicked: false,
+        editedIdx: -1,
         searchUser: "",
         filteredData: [],
         allUserBckup: []
     }
 
     componentDidMount(){
-        //var getUserData = ;
-       // const allUser = await getAllUser(config.User_Url);
-    
         axios.get(config.User_Url).then(response => {
             this.setState({allUser: response.data}) 
         })
-     //   this.setState({allUser: getUserData});
-       
     }
 
     reset = () => {
@@ -55,38 +51,45 @@ export default class User extends Component{
             "lastName": lastName,
             "employeeId": employeeId
         }
-        const response = createData(config.User_Url, userPayload)
-        if(response.data)
-            allUser.push(userPayload);
+        createData(config.User_Url, userPayload)
+        allUser.push(userPayload);
         this.setState({allUser: allUser}) 
-        console.log("response: "+ response)
     }
     }
 
     editUser = (e) => {
-        alert("id" + e.target.id)
         const userData = this.state.allUser[e.target.id];
-        alert("user data: "+ userData)
         this.setState({firstName: userData.firstName,
             lastName: userData.lastName,
             employeeId: userData.employeeId,
-            isEditBtnClicked : true
-        })
+            isEditBtnClicked : true,
+            editedIdx: e.target.id
+        });
     }
 
     deleteUser = (e) => {
         const {allUser} = this.state;
+        const data = allUser[e.target.id];
+        deleteData(config.User_Url+"?employeeId="+data.employeeId)
         allUser.splice(e.target.id,1)
         this.setState({allUser})
     }
 
     updateUser = () => {
-        const {firstName, lastName, employeeId} = this.state
+        const {firstName, lastName, employeeId, editedIdx, allUser} = this.state
         const payLoad = {
             "firstName" : firstName,
             "lastName" : lastName,
             "employeeId" : employeeId
         }
+        updateData(config.User_Url, payLoad);
+        allUser[editedIdx] = payLoad;
+        this.setState({
+            firstName: "",
+            lastName: "", 
+            employeeId: "",
+            allUser, 
+            isEditBtnClicked: false})
     }
 
     filterByFirstName = () => {
@@ -141,7 +144,7 @@ export default class User extends Component{
                 </table>
                 </form>
                 {
-                isEditBtnClicked===false ?
+                !isEditBtnClicked ?
                 <div className="container">
                     <button onClick={this.createUser}> Add </button>
                     <button onClick= {this.reset} className="reset"> Reset </button>
@@ -163,7 +166,8 @@ export default class User extends Component{
 
                         {
                             allUser.map((data, idx) => (
-                                <div id={data.employeeId} className="row">
+                                <div id={data.employeeId}>
+                                    <div className="row"> 
                                     <div className="column">
                                         First Name: <label value={data.fistName}>{data.firstName}</label><br/>
                                         Last Name: <label value={data.lastName}>{data.lastName}</label><br/>
@@ -175,10 +179,10 @@ export default class User extends Component{
                                     </div>
                                     <hr className="boder-dotted"/>
                                 </div>
+                                </div>
                             )
                             )
                         }
-
             </div>
             </div>
         );

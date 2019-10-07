@@ -31,3 +31,7 @@ export const deleteData = (url) => {
         console.log("exception occured while saving data: for the url " + url+ " exception: "+ error)
     })
 }
+
+export const putData = (url, payload) => {
+    return axios.put(url,payload);
+}
