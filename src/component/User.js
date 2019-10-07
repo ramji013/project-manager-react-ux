@@ -95,33 +95,27 @@ export default class User extends Component{
     }
 
     sortByFirstName = () => {
-        const {allUser,searchUser} = this.state;
-            let filteredSortedData = allUser.filter((user)=> {
-                    return user.firstName.toLowerCase().indexOf(searchUser)!==-1;
-            }).sort((user1, user2) => {
+        const {allUser} = this.state;
+            let sortedData = allUser.sort((user1, user2) => {
                 return user1.firstName < user2.firstName ? -1: 1;
             });
-            this.setState({allUser: filteredSortedData});
+            this.setState({allUser: sortedData});
     }
 
     sortByLastName = () => {
-        const {allUser,searchUser} = this.state;
-            let filteredSortedData = allUser.filter((user)=> {
-                    return user.lastName.toLowerCase().indexOf(searchUser)!==-1;
-            }).sort((user1, user2) => {
+        const {allUser} = this.state;
+            let sortedData = allUser.sort((user1, user2) => {
                 return user1.lastName < user2.lastName ? -1: 1;
             });
-            this.setState({allUser: filteredSortedData});
+            this.setState({allUser: sortedData});
     }
 
     sortById = () => {
-        const {allUser,searchUser} = this.state;
-        let filteredSortedData = allUser.filter((user)=> {
-                return user.employeeId.toLowerCase().indexOf(searchUser)!==-1;
-        }).sort((user1, user2) => {
+        const {allUser} = this.state;
+        let sortedData = allUser.sort((user1, user2) => {
             return user1.employeeId < user2.employeeId ? -1: 1;
         });
-        this.setState({allUser: filteredSortedData});
+        this.setState({allUser: sortedData});
     }
 
     cancelUpdate = () => {
@@ -147,10 +141,6 @@ export default class User extends Component{
     render(){
         const {firstName, lastName, employeeId,searchUser,allUser,isEditBtnClicked} = this.state;
 
-        let filterData = allUser.filter((user)=> {
-            return user.firstName.toLowerCase().indexOf(searchUser)!==-1;
-        });
-        
         return(
             <div>
             <div className="align-center">
