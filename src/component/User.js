@@ -17,12 +17,12 @@ export default class User extends Component{
         isEditBtnClicked: false,
         searchUser: "",
         filteredData: [],
-        allUserBckup: []
+        allUserBkup: []
     }
 
     componentDidMount(){
         axios.get(config.User_Url).then(response => {
-            this.setState({allUser: response.data}) 
+            this.setState({allUser: response.data, allUserBkup: response.data}) 
         })
     }
 
@@ -96,23 +96,32 @@ export default class User extends Component{
 
     sortByFirstName = () => {
         const {allUser,searchUser} = this.state;
-            this.setState({
-                allUserBckup: allUser,
-                allUser: allUser.filter((data) => {return data.firstName.startsWith(searchUser)})});
+            let filteredSortedData = allUser.filter((user)=> {
+                    return user.firstName.toLowerCase().indexOf(searchUser)!==-1;
+            }).sort((user1, user2) => {
+                return user1.firstName < user2.firstName ? -1: 1;
+            });
+            this.setState({allUser: filteredSortedData});
     }
 
-    filterByLastName = () => {
+    sortByLastName = () => {
         const {allUser,searchUser} = this.state;
-            this.setState({
-                allUserBckup: allUser,
-                allUser: allUser.filter((data) => {return data.lastName.startsWith(searchUser)})});
+            let filteredSortedData = allUser.filter((user)=> {
+                    return user.lastName.toLowerCase().indexOf(searchUser)!==-1;
+            }).sort((user1, user2) => {
+                return user1.lastName < user2.lastName ? -1: 1;
+            });
+            this.setState({allUser: filteredSortedData});
     }
 
-    filterById = () => {
+    sortById = () => {
         const {allUser,searchUser} = this.state;
-            this.setState({
-                allUserBckup: allUser,
-                allUser: allUser.filter((data) => {return data.employeeId.startsWith(searchUser)})});
+        let filteredSortedData = allUser.filter((user)=> {
+                return user.employeeId.toLowerCase().indexOf(searchUser)!==-1;
+        }).sort((user1, user2) => {
+            return user1.employeeId < user2.employeeId ? -1: 1;
+        });
+        this.setState({allUser: filteredSortedData});
     }
 
     cancelUpdate = () => {
@@ -124,11 +133,16 @@ export default class User extends Component{
     }
 
     updateSearchStateChange = (e) => {
-        const {allUserBckup} = this.state;
-        if(!e.target.value && allUserBckup.length>0){
-            this.setState({allUser: allUserBckup})
+        const {allUser, allUserBkup} = this.state;
+        let filteredData = allUser.filter((user)=> {
+            return user.firstName.toLowerCase().indexOf(e.target.value)!==-1;
+        });
+
+        if(!e.target.value){
+            this.setState({allUser: allUserBkup, searchUser:""})
+        }else{
+            this.setState({searchUser: e.target.value, allUser: filteredData})
         }
-        this.setState({searchUser: e.target.value})
     }
 
     render(){
@@ -172,7 +186,7 @@ export default class User extends Component{
                 <hr className="boder-dotted"/>
 
                         {
-                            filterData.map((data, idx) => (
+                            allUser.map((data, idx) => (
                                 <div id={data.employeeId}>
                                   <ListGroup>
                                       <ListGroup.Item className="column">
