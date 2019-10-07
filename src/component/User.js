@@ -134,13 +134,12 @@ export default class User extends Component{
 
     updateSearchStateChange = (e) => {
         const {allUser, allUserBkup} = this.state;
-        let filteredData = allUser.filter((user)=> {
-            return user.firstName.toLowerCase().indexOf(e.target.value)!==-1;
-        });
-
         if(!e.target.value){
             this.setState({allUser: allUserBkup, searchUser:""})
         }else{
+            let filteredData = allUser.filter((user)=> {
+                return user.firstName.toLowerCase().indexOf(e.target.value)!==-1;
+            });
             this.setState({searchUser: e.target.value, allUser: filteredData})
         }
     }
