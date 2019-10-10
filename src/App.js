@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
-import User from './component/User'
-import Home from './router/Home'
+import User from './component/User';
+import Project from './component/Project';
+import Home from './router/Home';
 
 export default class App extends Component {
   render(){
@@ -12,6 +13,7 @@ export default class App extends Component {
         <Router>
          <Home/>
          <Switch>
+           <Route path="/addProject" component = {Project}/>
            <Route path="/addUser" component = {User}/>
            </Switch>
         </Router>
