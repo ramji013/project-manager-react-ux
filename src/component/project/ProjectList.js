@@ -7,7 +7,9 @@ export default class ProjectList extends Component{
     constructor(props){
         super(props);
         this.state= {
-            allProject: []
+            allProject: [],
+            searchProject: "",
+            isCompletedSorted: false
         }
     }
 
@@ -17,28 +19,64 @@ export default class ProjectList extends Component{
         })
     }
 
-    sort = (field) => {
+    sortByCompleted = (e) => {
+        const {allProject, isCompletedSorted} = this.state;
+        let sortedData;
+        if(!isCompletedSorted){
+            this.setState({isCompletedSorted: true})
+            sortedData = allProject.sort((project1, project2) => {
+            return project1.completed < project2.completed ? -1: 1;
+        });
+        }else{
+            this.setState({isCompletedSorted: false})
+            sortedData = allProject.sort((project1, project2) => {
+                return project1.completed > project2.completed ? -1: 1;
+        });
+        this.setState({allProject: sortedData});
+    }
+}
+
+    sortByStartDate = () => {
+
+    }
+
+    sortByEndDate = () => {
         
     }
 
+    sortByPriority = () => {
+        
+    }
+
+
     updateProjectProperties = (e) => {
-        alert(this.state.allProject[e.target.id])
         this.props.updateProjectProperties(e,this.state.allProject[e.target.id]);
     }
 
+    updateSearchText = (e) => {
+        this.setState({
+            searchProject : e.target.value
+        })
+    }
+
     render(){
-        const {allProject} = this.state;
+        const {allProject, searchProject} = this.state;
+
+       const filteredData = allProject.filter((user)=> {
+            return user.projectName.toLowerCase().search(searchProject)!==-1;
+        });
+
         return(
             <div>
-                    <input type="text" placeholder="Search..." value={this.searchProject}></input>
+                    <input type="text" placeholder="Search..." value={searchProject} onChange={this.updateSearchText}></input>
                     <div className="sort-by">
-                            <label>Sort By:</label> <button onClick={this.sort('startDate')}>Start Date</button>
-                            <button onClick={this.sort('endDate')}>End Date</button>
-                            <button onClick={this.sort('priority')}>Priority</button>
-                            <button onClick={this.sort('completed')}>Completed</button>
+                            <label>Sort By:</label> <button onClick={this.sortByStartDate('startDate')}>Start Date</button>
+                            <button onClick={this.sortByEndDate('endDate')}>End Date</button>
+                            <button onClick={this.sortByPriority('priority')}>Priority</button>
+                            <button onClick={this.sortByCompleted}>Completed</button>
                     </div>
                     {
-                        allProject.map((data, idx) => (
+                        filteredData.map((data, idx) => (
                     <div className="container-flex" id={idx}>
                         <div className="project-container">
                             <div>Project: {data.projectName}</div>

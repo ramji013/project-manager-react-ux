@@ -24,9 +24,8 @@ export default class Project extends Component{
             startDate : null,
             endDate: null,
             managerId: "",
-            showModal : false,
             isChecked: false,
-            isEditBtnClicked: false,
+            isEditBtnClicked: false
             }
         this.updateUser = React.createRef();
         
@@ -48,10 +47,6 @@ export default class Project extends Component{
         this.setState({endDate: date})
     }
 
-    cancelChange = () => {
-        this.setState({isEditBtnClicked: false})
-    }
-
     updateProjectProperties = (e,project) => {
         this.setState({
             projectName: project.projectName,
@@ -62,7 +57,7 @@ export default class Project extends Component{
             managerId: project.managerId,
             isEditBtnClicked: true
         })
-        this.updateUser.current.updateUser(project.managerId)
+       this.updateUser.current.updateUser(project.managerId)  
     }
 
     updateUserId = (e) => {
@@ -110,7 +105,7 @@ export default class Project extends Component{
 
     render(){
         const {projectName, priority, startDate, endDate,isChecked, isEditBtnClicked} = this.state;
-      
+    
         return(
           
             <Container className="project-component-container">   
