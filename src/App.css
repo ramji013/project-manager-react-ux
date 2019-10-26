@@ -53,20 +53,6 @@ button.reset{
     background-color: red;
 }
 
-.column {
-  float: left;
-  width: 50%;
-  padding: 10px;
-  height: 80px;
-}
-
-.backgrnd {
-  background-color: aquamarine;
-}
-.backgrnd2 {
-  background-color: burlywood;
-}
-
 .row:after {
   content: "";
   display: table;
