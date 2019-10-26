@@ -1,0 +1,18 @@
+.container .box .box-row { 
+    display:flex; 
+} 
+.container .box .box-cell { 
+    display:flexbox; 
+    width:50%; 
+    padding:10px; 
+} 
+.container .box .box-cell.box1{
+    float:left;
+    background: lightgrey;
+    text-align: start;
+ }
+
+ .container .box .box-cell.box2{ 
+    float: right;
+    background: lightsteelblue;
+ }

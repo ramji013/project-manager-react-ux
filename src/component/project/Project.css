@@ -1,0 +1,53 @@
+.list-all-user table {
+    border-collapse: collapse;
+    border: 1px solid black;
+    table-layout: auto;
+    width: 180px;  
+  } 
+  
+.list-all-user th,td {
+    border: 1px solid black;
+  }
+  
+.list-all-user tr,td {
+    white-space: nowrap;
+  }
+ 
+.margin-right{
+  margin-block: 4px;
+}
+
+.project-container{
+  margin-left: 20px;
+  margin-right: 20px;
+  padding-left: 5px;
+  margin-top: 25px;
+  max-width: 25%;
+  background: #ccc;
+  width: 300px;
+  line-height: 200%;
+}
+
+.left-project-container{
+  float: left;
+}
+
+.right-project-container{
+  float: right;
+}
+
+.sort-by{
+  margin-top: 10px;
+}
+
+.project-component-container{
+  margin-top: 10px;
+  width:500px;
+  height: 400px;
+  line-height: 200%;
+}
+
+.checkbox-align{
+  margin-left: 5%;
+  margin-top: 1%;
+}

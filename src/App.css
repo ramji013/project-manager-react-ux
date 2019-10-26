@@ -46,7 +46,9 @@ hr.boder-dotted{
 }
 
 .container button{
-  margin-right:16px;
+  margin-right:2%;
+  margin-top: 2%;
+  
 }
 
 button.reset{
@@ -61,4 +63,8 @@ button.reset{
 
 * {
   box-sizing: border-box;
+}
+
+.container-flex{
+  display: flex;
 }
