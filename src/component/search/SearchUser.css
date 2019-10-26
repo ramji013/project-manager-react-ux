@@ -1,0 +1,14 @@
+.list-all-user table {
+    border-collapse: collapse;
+    border: 1px solid black;
+    table-layout: auto;
+    width: 180px;  
+  } 
+  
+.list-all-user th,td {
+    border: 1px solid black;
+  }
+  
+.list-all-user tr,td {
+    white-space: nowrap;
+  }

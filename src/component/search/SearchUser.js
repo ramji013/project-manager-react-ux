@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Modal, Button, Container, Row, Col} from 'react-bootstrap';
 import axios from 'axios';
 import * as config from '../../config/config';
-
+import '../search/SearchUser.css';
 
 export default class SearchUser extends Component{
     constructor(props){
@@ -14,9 +14,7 @@ export default class SearchUser extends Component{
         }
     }
     
-    
-
-searchManager = (e) => {
+searchUser = (e) => {
     this.setState({showModal: true})
     axios.get(config.User_Url).then(response => {
         this.setState({allUser: response.data})
@@ -50,11 +48,11 @@ render(){
     return (
 <div>
         <input text="input" value={userId} disabled name="managerId" onChange={this.updateManagerId}></input>
-                    <button onClick={this.searchManager}>Search</button>
+                    <button onClick={this.searchUser}>Search</button>
             
         <Modal show={showModal} onHide={this.closeModal}>
               <Modal.Header closeButton>
-              <Modal.Title>Search Manager</Modal.Title>
+              <Modal.Title>{this.props.title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className="list-all-user">
