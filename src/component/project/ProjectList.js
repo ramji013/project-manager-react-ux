@@ -9,7 +9,9 @@ export default class ProjectList extends Component{
         this.state= {
             allProject: [],
             searchProject: "",
-            isCompletedSorted: false
+            isCompletedSorted: false,
+            isPrioritySorted: false,
+            isStartDateSorted: false
         }
     }
 
@@ -37,7 +39,20 @@ export default class ProjectList extends Component{
 }
 
     sortByStartDate = () => {
-
+        const {allProject, isStartDateSorted} = this.state;
+        let sortedData;
+        if(!isStartDateSorted){
+            this.setState({isStartDateSorted: true})
+            sortedData = allProject.sort((project1, project2) => {
+            return project2.startDate - project1.startDate ? -1: 1;
+        });
+        }else{
+            this.setState({isStartDateSorted: false})
+            sortedData = allProject.sort((project1, project2) => {
+                return project1.startDate - project2.startDate ? -1: 1;
+        });
+        this.setState({allProject: sortedData});
+    }
     }
 
     sortByEndDate = () => {
@@ -45,8 +60,22 @@ export default class ProjectList extends Component{
     }
 
     sortByPriority = () => {
-        
+        const {allProject, isPrioritySorted} = this.state;
+        let sortedData;
+        if(!isPrioritySorted){
+            this.setState({isPrioritySorted: true})
+            sortedData = allProject.sort((project1, project2) => {
+            return project1.priority < project2.priority ? -1: 1;
+        });
+        }else{
+            this.setState({isPrioritySorted: false})
+            sortedData = allProject.sort((project1, project2) => {
+                return project1.priority > project2.priority ? -1: 1;
+        });
+        this.setState({allProject: sortedData});
     }
+    }
+
 
 
     updateProjectProperties = (e) => {
@@ -70,9 +99,9 @@ export default class ProjectList extends Component{
             <div>
                     <input type="text" placeholder="Search..." value={searchProject} onChange={this.updateSearchText}></input>
                     <div className="sort-by">
-                            <label>Sort By:</label> <button onClick={this.sortByStartDate('startDate')}>Start Date</button>
-                            <button onClick={this.sortByEndDate('endDate')}>End Date</button>
-                            <button onClick={this.sortByPriority('priority')}>Priority</button>
+                            <label>Sort By:</label> <button onClick={this.sortByStartDate}>Start Date</button>
+                            <button onClick={this.sortByEndDate}>End Date</button>
+                            <button onClick={this.sortByPriority}>Priority</button>
                             <button onClick={this.sortByCompleted}>Completed</button>
                     </div>
                     {
