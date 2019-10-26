@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 //import '../App.css';
 import * as config from '../../config/config';
 import {createData, updateData, deleteData} from '../../service/projectmanager';
-import axios from 'axios';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import addDays from 'date-fns/addDays';
@@ -11,7 +10,7 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import '../project/Project.css';
 import Manager from '../search/SearchUser';
-
+import ProjectList from '../project/ProjectList';
 
 export default class Project extends Component{
 
@@ -26,17 +25,11 @@ export default class Project extends Component{
             endDate: null,
             managerId: "",
             showModal : false,
-            isChecked: false
+            isChecked: false,
+            isEditBtnClicked: false,
             }
-        this.resetUser = React.createRef();
-
-    }
-    
-
-    componentWillMount(){
-        axios.get(config.Project_Url).then(response => {
-            this.setState({allProject: response.data})
-        })
+        this.updateUser = React.createRef();
+        
     }
 
     updateProjectName = (e) => {
@@ -53,6 +46,23 @@ export default class Project extends Component{
 
     updateEndDate = date => {
         this.setState({endDate: date})
+    }
+
+    cancelChange = () => {
+        this.setState({isEditBtnClicked: false})
+    }
+
+    updateProjectProperties = (e,project) => {
+        this.setState({
+            projectName: project.projectName,
+            isChecked: true,
+            startDate: new Date(project.startDate),
+            endDate: new Date(project.endDate),
+            priority: project.priority,
+            managerId: project.managerId,
+            isEditBtnClicked: true
+        })
+        this.updateUser.current.updateUser(project.managerId)
     }
 
     updateUserId = (e) => {
@@ -74,24 +84,19 @@ export default class Project extends Component{
                 "priority": priority,
                 "managerId": managerId
             }
-            alert(userPayload)
             createData(config.Project_Url, userPayload)
             allProject.push(userPayload);
-            alert(allProject)
             this.setState({allProject, projectName: "", startDate: null, endDate: null, priority:0, managerId: ""}) 
-            this.resetUser.current.resetUser();
+            this.updateUser.current.resetUser();
         }
-    }
-
-    sort = (field) => {
-        
     }
 
     reset = () => {
         this.setState({ projectName : "",
         priority: 0,
         startDate : null,
-        endDate: null, isChecked: false})
+        endDate: null, isChecked: false, managerId: "", isEditBtnClicked: false})
+        this.updateUser.current.updateUser("");
     }
 
     enableDate = (e) => {
@@ -103,20 +108,8 @@ export default class Project extends Component{
             this.setState({isChecked: false, startDate: null, endDate: null})
     }
 
-    editProject = (e, idx) => {
-        const project = this.state.allProject[e.target.id];
-        this.setState({projectName: project.projectName,
-                isChecked: true,
-                startDate: new Date(project.startDate),
-                endDate: new Date(project.endDate),
-                priority: project.priority,
-                managerId: project.managerId
-        })
-       
-    }
-
     render(){
-        const {projectName, priority, startDate, endDate,isChecked, allProject} = this.state;
+        const {projectName, priority, startDate, endDate,isChecked, isEditBtnClicked} = this.state;
       
         return(
           
@@ -140,51 +133,20 @@ export default class Project extends Component{
                 </Row>
                 <Row>
                     <Col sm="0"><label htmlFor="managerPid">Manager:</label></Col>
-                    <Col sm="6"><Manager updateUserId={this.updateUserId} ref={this.resetUser} title="Search Manager"/></Col>
+                    <Col sm="6"><Manager updateUserId={this.updateUserId} ref={this.updateUser} title="Search Manager"/></Col>
                 </Row>
-               
-                <div className="add-reset-button-component">
+               {
+                !isEditBtnClicked ? <div className="add-reset-button-component">
                     <button onClick={this.createUser} style={{"top": "10%"}}> Add </button>
                     <button onClick= {this.reset}> Reset </button>
+                </div>:
+                <div className="add-reset-button-component">
+                    <button onClick={this.createUser} style={{"top": "10%"}}> Update </button>
+                    <button onClick= {this.reset}> Cancel </button>
                 </div>
+}
                 <hr className="boder-dotted"/>
-                <div>
-                    <input type="text" placeholder="Search..." value={this.searchProject}></input>
-                    <div className="sort-by">
-                            <label>Sort By:</label> <button onClick={this.sort('startDate')}>Start Date</button>
-                            <button onClick={this.sort('endDate')}>End Date</button>
-                            <button onClick={this.sort('priority')}>Priority</button>
-                            <button onClick={this.sort('completed')}>Completed</button>
-                    </div>
-                    {
-                        
-                        allProject.map((data, idx) => (
-                    <div className="container-flex" id={idx}>
-                        <div className="project-container">
-                            <div>Project: {data.projectName}</div>
-                                        <div className="left-project-container">
-                                            <div>No of Tasks: {data.noOfTask} </div>
-                                            <div>Start Date:{data.startDate}</div>
-                                        </div>
-                                        <div className="right-project-container">
-                                                <div>Completed:{data.completed}</div>
-                                                <div>End Date:{data.endDate}</div>
-                                        </div>
-                        </div>
-                            <div className="margin-priority">
-                                <div >Priority:</div>
-                                <div className="project-priority">{data.priority}</div>
-                            </div>
-                            <div className="project-update-suspend">
-                                <div><button onClick={this.editProject} id={idx}>Update</button></div>
-                                <div><button onClick={this.suspendProject}>Suspend</button></div>
-                            </div>
-
-                        </div>
-                        ))
-                        }
-                    </div>    
-                    
+                <ProjectList updateProjectProperties = {this.updateProjectProperties}/>
             </Container>
            
         );

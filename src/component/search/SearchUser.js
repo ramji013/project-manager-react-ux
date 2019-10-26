@@ -26,9 +26,6 @@ closeModal = (e) => {
 }
 
 filterByFirstName = (e) => {
-    // this.setState({allUser: allUser.filter((user)=> {
-    //     return user.firstName.toLowerCase().indexOf(e.target.value)!==-1;
-    // })})
     this.state.allUser.filter((user)=> {
         return user.firstName.toLowerCase().indexOf(e.target.value)!==-1;
     });
@@ -36,6 +33,10 @@ filterByFirstName = (e) => {
 
 resetUser = () => {
     this.setState({userId: ""})
+}
+
+updateUser = (userId) => {
+    this.setState({userId})
 }
 
 selectUser = (e) => {
