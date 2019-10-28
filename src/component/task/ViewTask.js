@@ -6,7 +6,7 @@ export default class ViewTask extends Component{
     render(){
         return(
             <div>
-                <div className="container">
+                <div className="c">
                     <label>Project:</label> <input type="text"></input> <button>Search</button>
                     <label>Sort Task By:</label> <button>Start Date</button> <button>End Date</button>
                     <button>Priority</button> <button>Completed</button>

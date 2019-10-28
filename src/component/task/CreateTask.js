@@ -5,11 +5,15 @@ import "react-datepicker/dist/react-datepicker.css";
 import addDays from 'date-fns/addDays';
 import '../task/task.css';
 import SearchProject from '../search/SearchProject';
+import SearchParentTask from '../search/SearchParentTask';
+import {createData, updateData} from '../../service/projectmanager';
+import * as config from '../../config/config';
 
 export default class CreateTask extends Component{
 
     state = {
-        project: "",
+        projectName: "",
+        projectId: "",
         task: "",
         isParentTask: false,
         priority: 0,
@@ -20,7 +24,7 @@ export default class CreateTask extends Component{
     }
 
     updateProject = (e) => {
-        this.setState({project: e.target.value})
+        this.setState({projectName: e.target.value, projectId: e.target.id})
     }
 
     updateTask = (e) => {
@@ -42,6 +46,8 @@ export default class CreateTask extends Component{
             this.setState({userId: ""})
     }
 
+    selectParentTask = (e) => {}
+
     updateParentTask = () => {
         const{isParentTask} = this.state;
         alert(isParentTask)
@@ -56,8 +62,22 @@ export default class CreateTask extends Component{
         this.setState({priority: e.target.value})
     }
 
+    createTask = (e) => {
+        const {projectId,projectName, task, isParentTask, priority, parentTask, startDate, endDate, userId} = this.state;
+        if(isParentTask){
+            const taskPayLoad = {
+                "taskName" : task,
+                "projectName": projectName,
+                "projectId" : projectId,
+                "isParentTask" : isParentTask
+            }
+            alert(task + " projectName: " + projectName + " projectId: " + projectId + " isParentTask" + isParentTask);
+            createData(config.Task_Url, taskPayLoad);
+        }
+    }
+
     render(){
-        const {project, task, startDate, endDate , isParentTask, priority} = this.state;
+        const {task, startDate, endDate , isParentTask, priority} = this.state;
         return(
             <div className="task-container">
                 <table>
@@ -72,14 +92,15 @@ export default class CreateTask extends Component{
                         </tr>
                         <tr><td></td><td><input type="checkbox" onClick={this.updateParentTask} checked={isParentTask}></input>Parent Task</td></tr>
                         <tr><td>Priority: </td> <td> <input type="range" min="0" max="30" defaultValue="0" disabled={isParentTask} value={priority} onChange={this.updatePriority}></input> {priority}</td></tr>
-                        <tr><td>Parent Task</td> <td><input type="text"></input><button disabled={isParentTask} onClick={this.searchProject}>Search</button></td></tr>
+                        <tr><td>Parent Task:</td> <td><SearchParentTask selectParentTask = {this.selectParentTask}/></td></tr>
                         <tr><td>Start Date</td>
                         <td><DatePicker selected={startDate} onChange={this.updateStartDate} selectsStart startDate={startDate} id="startDate" disabled={isParentTask}/>
                         End Date: <DatePicker selected={endDate} onChange={this.updateEndDate} selectsStart endDate={endDate} minDate={addDays(startDate, 1)} id="endDate" disabled={isParentTask}/> </td></tr>
                         <tr><td>User:</td><td><User updateUserId={this.updateUserId} title="Search User" isParentTask={isParentTask}/></td></tr>
-                        <div className="container-flex right-task-container">
-                            <button>Add</button>
-                            <button>Reset</button></div>
+                        {/* <div className="container-flex right-task-container"> */}
+                            <button onClick={this.createTask}>Add</button>
+                            <button>Reset</button>
+                            {/*</div>*/}
                         </body>
                 </table>
             </div>
