@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Modal, Button, Container, Row, Col} from 'react-bootstrap';
+import {Modal, Button} from 'react-bootstrap';
 import axios from 'axios';
 import * as config from '../../config/config';
 import '../search/SearchUser.css';
@@ -10,7 +10,8 @@ export default class SearchUser extends Component{
         this.state = {
             showModal: false,
             allUser: [], 
-            userId: ""
+            userId: "",
+            firstName: ""
         }
     }
     
@@ -25,10 +26,8 @@ closeModal = (e) => {
     this.setState({showModal: false})
 }
 
-filterByFirstName = (e) => {
-    this.state.allUser.filter((user)=> {
-        return user.firstName.toLowerCase().indexOf(e.target.value)!==-1;
-    });
+updateFirstName = (e) => {
+  this.setState({firstName: e.target.value})
 }
 
 resetUser = () => {
@@ -45,11 +44,17 @@ selectUser = (e) => {
 }
 
 render(){
-    const {userId,showModal,allUser} = this.state
+    const {userId,showModal,allUser,firstName} = this.state
+
+    let filteredData = allUser.filter((user)=> {
+        return user.firstName.toLowerCase().search(firstName)!==-1;
+    });
+
     return (
+       
 <div>
-        <input text="input" value={userId} disabled name="managerId" onChange={this.updateManagerId}></input>
-                    <button onClick={this.searchUser}>Search</button>
+        <input text="input" value={userId} disabled name="managerId"></input>
+                    <button onClick={this.searchUser} disabled={this.props.isParentTask}>Search</button>
             
         <Modal show={showModal} onHide={this.closeModal}>
               <Modal.Header closeButton>
@@ -57,16 +62,16 @@ render(){
             </Modal.Header>
             <Modal.Body>
                 <div className="list-all-user">
-                    <table>
-                    <th>First Name <input type="text" size="10" onChange={this.filterByFirstName}></input></th>
-                        <th>Last Name <input type="text" size="10"></input></th> 
-                        <th>Id <input type="text" size="10"></input></th> 
+                    <table cellPadding="10">
+                    <th>First Name <input type="text" size="10" onChange={this.updateFirstName} value={firstName}></input></th>
+                        <th>Last Name</th> 
+                        <th>Id</th> 
                         <th>Action</th>
                         
                     <tbody>
                         
                         {
-                        allUser.map((data, idx)=> (
+                        filteredData.map((data, idx)=> (
                             <tr id={idx}><td>{data.firstName}</td><td>{data.lastName}</td><td>{data.employeeId}</td><td><button onClick={this.selectUser} value={data.employeeId}>Select</button></td></tr>
                         ))
                     }

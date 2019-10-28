@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import * as config from '../../config/config';
+import {deleteData} from '../../service/projectmanager';
 
 export default class ProjectList extends Component{
 
@@ -11,7 +12,8 @@ export default class ProjectList extends Component{
             searchProject: "",
             isCompletedSorted: false,
             isPrioritySorted: false,
-            isStartDateSorted: false
+            isStartDateSorted: false,
+            isEndDateSorted: false
         }
     }
 
@@ -44,19 +46,32 @@ export default class ProjectList extends Component{
         if(!isStartDateSorted){
             this.setState({isStartDateSorted: true})
             sortedData = allProject.sort((project1, project2) => {
-            return project2.startDate - project1.startDate ? -1: 1;
+            return new Date(project2.startDate) - new Date(project1.startDate);
         });
         }else{
             this.setState({isStartDateSorted: false})
             sortedData = allProject.sort((project1, project2) => {
-                return project1.startDate - project2.startDate ? -1: 1;
+                return  new Date(project1.startDate) - new Date(project2.startDate);
         });
         this.setState({allProject: sortedData});
     }
     }
 
     sortByEndDate = () => {
-        
+        const {allProject, isEndDateSorted} = this.state;
+        let sortedData;
+        if(!isEndDateSorted){
+            this.setState({isEndDateSorted: true})
+            sortedData = allProject.sort((project1, project2) => {
+            return new Date(project2.endDate) - new Date(project1.startDate);
+        });
+        }else{
+            this.setState({isEndDateSorted: false})
+            sortedData = allProject.sort((project1, project2) => {
+                return  new Date(project1.startDate) - new Date(project2.startDate);
+        });
+        this.setState({allProject: sortedData});
+    }
     }
 
     sortByPriority = () => {
@@ -76,8 +91,6 @@ export default class ProjectList extends Component{
     }
     }
 
-
-
     updateProjectProperties = (e) => {
         this.props.updateProjectProperties(e,this.state.allProject[e.target.id]);
     }
@@ -88,9 +101,18 @@ export default class ProjectList extends Component{
         })
     }
 
+    suspendProject = (e) =>{
+        const {allProject} = this.state;
+        const data = allProject[e.target.id];
+        deleteData(config.Project_Url+"?projectId="+data.projectId)
+        allProject.splice(e.target.id,1)
+        this.setState({allProject})
+    }
+
     render(){
         const {allProject, searchProject} = this.state;
-
+        //allProject.push(this.props.updatedProject);
+        
        const filteredData = allProject.filter((user)=> {
             return user.projectName.toLowerCase().search(searchProject)!==-1;
         });
@@ -123,8 +145,9 @@ export default class ProjectList extends Component{
                                 <div className="project-priority">{data.priority}</div>
                             </div>
                             <div className="project-update-suspend">
+                            
                                 <div><button onClick={this.updateProjectProperties} id={idx}>Update</button></div>
-                                <div><button onClick={this.suspendProject}>Suspend</button></div>
+                                <div><button onClick={this.suspendProject} id={idx}>Suspend</button></div>
                             </div>
 
                         </div>

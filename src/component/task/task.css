@@ -1,0 +1,50 @@
+.task-container{
+    
+    margin-top:1%;
+    line-height: 200%;
+    align-content: space-around;
+    box-sizing: border-box;
+}
+
+.task-content-container{
+    margin-left: 20px;
+    margin-right: 30px;
+    padding-left: 5px;
+    margin-top: 25px;
+    background: #ccc;
+    width: 200px;
+    border-block: inherit   ;
+    line-height: 300%;
+  }
+
+  .task-parent-container{
+    background: #ccc;
+    height: 68%;
+    text-align: center;
+    width: 10px;
+  }
+  
+
+  .right-task-container{
+    float: right;
+  }
+
+  .task-content-container input{
+    margin-right:16px;
+    margin-top: 10px;
+  }
+  
+  .task-content-container button{
+    margin-right:2%;
+    margin-top: 2%;
+  }
+
+  .task-container input{
+    margin-right:16px;
+    margin-top: 10px;
+  }
+  
+  .task-container button{
+    margin-right:2%;
+    margin-top: 2%;
+  }

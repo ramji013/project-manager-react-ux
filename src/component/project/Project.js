@@ -1,13 +1,10 @@
 import React, {Component} from 'react';
-//import '../App.css';
 import * as config from '../../config/config';
-import {createData, updateData, deleteData} from '../../service/projectmanager';
+import {createData, updateData} from '../../service/projectmanager';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import addDays from 'date-fns/addDays';
-import Row from 'react-bootstrap/Row';
-import Container from 'react-bootstrap/Container';
-import Col from 'react-bootstrap/Col';
+import {Row, Container, Col} from 'react-bootstrap';
 import '../project/Project.css';
 import Manager from '../search/SearchUser';
 import ProjectList from '../project/ProjectList';
@@ -18,17 +15,16 @@ export default class Project extends Component{
         super(props);
         this.state = {
             allProject: [],
-            allUser: [],
             projectName : "",
             priority: 0,
             startDate : null,
             endDate: null,
             managerId: "",
             isChecked: false,
-            isEditBtnClicked: false
+            isEditBtnClicked: false,
+            projectId: ""
             }
         this.updateUser = React.createRef();
-        
     }
 
     updateProjectName = (e) => {
@@ -55,7 +51,8 @@ export default class Project extends Component{
             endDate: new Date(project.endDate),
             priority: project.priority,
             managerId: project.managerId,
-            isEditBtnClicked: true
+            isEditBtnClicked: true,
+            projectId: project.projectId
         })
        this.updateUser.current.updateUser(project.managerId)  
     }
@@ -67,10 +64,8 @@ export default class Project extends Component{
             this.setState({managerId: ""})
     }
 
-    createUser = () => {
-        const{projectName, startDate, endDate, priority,managerId, allProject} = this.state;
-        alert("projectName:" + projectName + " startDate: "+ startDate + " endDate: "+ endDate + "priority: " + priority + " managerid: " + managerId)
-
+    createProject = () => {
+        const{projectName, startDate, endDate, priority,managerId} = this.state;
         if(projectName){
             const userPayload = {
                 "projectName": projectName,
@@ -80,8 +75,24 @@ export default class Project extends Component{
                 "managerId": managerId
             }
             createData(config.Project_Url, userPayload)
-            allProject.push(userPayload);
-            this.setState({allProject, projectName: "", startDate: null, endDate: null, priority:0, managerId: ""}) 
+            this.setState({projectName: "", startDate: null, endDate: null, priority:0, managerId: ""}) 
+            this.updateUser.current.resetUser();
+        }
+    }
+
+    updateProject = () => {
+        const{projectName, startDate, endDate, priority,managerId, projectId} = this.state;
+        if(projectName){
+            const userPayload = {
+                "projectName": projectName,
+                "startDate": startDate,
+                "endDate": endDate,
+                "priority": priority,
+                "managerId": managerId,
+                "projectId" : projectId
+            }
+            updateData(config.Project_Url, userPayload)
+            this.setState({projectName: "", startDate: null, endDate: null, priority:0, managerId: ""}) 
             this.updateUser.current.resetUser();
         }
     }
@@ -104,20 +115,18 @@ export default class Project extends Component{
     }
 
     render(){
-        const {projectName, priority, startDate, endDate,isChecked, isEditBtnClicked} = this.state;
+        const {projectName, priority, startDate, endDate,isChecked, isEditBtnClicked, allProject} = this.state;
     
         return(
-          
             <Container className="project-component-container">   
-            
                 <Row>
                     <Col sm="0"><label htmlFor="projectName">Project: </label></Col> 
-                    <Col> <input type="text" name="projectName" value={projectName} onChange={this.updateProjectName} size="74"></input></Col>
+                    <Col> <input type="text" name="projectName" value={projectName} onChange={this.updateProjectName}></input></Col>
                 </Row>
                 <Row>
                     <Col sm="8" className="checkbox-align">
                         <input type="checkbox" checked={isChecked} name="setStartEndDate" onClick={this.enableDate}></input> <label htmlFor="setStartEndDate">Set Start and End Date</label>
-                        <DatePicker selected={startDate} onChange={this.updateStartDate} selectsStart startDate={startDate} endDate={endDate} id="startDate" disabled={!isChecked}/>
+                        <DatePicker selected={startDate} onChange={this.updateStartDate} selectsStart startDate={startDate} id="startDate" disabled={!isChecked}/>
                         <DatePicker selected={endDate} onChange={this.updateEndDate} selectsStart endDate={endDate} minDate={addDays(startDate, 1)} id="endDate" disabled={!isChecked}/>
                         
                     </Col>
@@ -130,18 +139,19 @@ export default class Project extends Component{
                     <Col sm="0"><label htmlFor="managerPid">Manager:</label></Col>
                     <Col sm="6"><Manager updateUserId={this.updateUserId} ref={this.updateUser} title="Search Manager"/></Col>
                 </Row>
+              
                {
                 !isEditBtnClicked ? <div className="add-reset-button-component">
-                    <button onClick={this.createUser} style={{"top": "10%"}}> Add </button>
+                    <button onClick={this.createProject} style={{"top": "10%"}}> Add </button>
                     <button onClick= {this.reset}> Reset </button>
                 </div>:
                 <div className="add-reset-button-component">
-                    <button onClick={this.createUser} style={{"top": "10%"}}> Update </button>
+                    <button onClick={this.updateProject} style={{"top": "10%"}}> Update </button>
                     <button onClick= {this.reset}> Cancel </button>
                 </div>
 }
                 <hr className="boder-dotted"/>
-                <ProjectList updateProjectProperties = {this.updateProjectProperties}/>
+                <ProjectList updateProjectProperties = {this.updateProjectProperties} updatedProject = {allProject}/>
             </Container>
            
         );
