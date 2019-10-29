@@ -92,7 +92,7 @@ export default class CreateTask extends Component{
                         </tr>
                         <tr><td></td><td><input type="checkbox" onClick={this.updateParentTask} checked={isParentTask}></input>Parent Task</td></tr>
                         <tr><td>Priority: </td> <td> <input type="range" min="0" max="30" defaultValue="0" disabled={isParentTask} value={priority} onChange={this.updatePriority}></input> {priority}</td></tr>
-                        <tr><td>Parent Task:</td> <td><SearchParentTask selectParentTask = {this.selectParentTask}/></td></tr>
+                        <tr><td>Parent Task:</td> <td><SearchParentTask selectParentTask = {this.selectParentTask} isParentTask={isParentTask}/></td></tr>
                         <tr><td>Start Date</td>
                         <td><DatePicker selected={startDate} onChange={this.updateStartDate} selectsStart startDate={startDate} id="startDate" disabled={isParentTask}/>
                         End Date: <DatePicker selected={endDate} onChange={this.updateEndDate} selectsStart endDate={endDate} minDate={addDays(startDate, 1)} id="endDate" disabled={isParentTask}/> </td></tr>

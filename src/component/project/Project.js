@@ -4,7 +4,6 @@ import {createData, updateData} from '../../service/projectmanager';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import addDays from 'date-fns/addDays';
-import {Row, Container, Col} from 'react-bootstrap';
 import '../project/Project.css';
 import Manager from '../search/SearchUser';
 import ProjectList from '../project/ProjectList';
@@ -118,27 +117,32 @@ export default class Project extends Component{
         const {projectName, priority, startDate, endDate,isChecked, isEditBtnClicked, allProject} = this.state;
     
         return(
-            <Container className="project-component-container">   
-                <Row>
-                    <Col sm="0"><label htmlFor="projectName">Project: </label></Col> 
-                    <Col> <input type="text" name="projectName" value={projectName} onChange={this.updateProjectName}></input></Col>
-                </Row>
-                <Row>
-                    <Col sm="8" className="checkbox-align">
-                        <input type="checkbox" checked={isChecked} name="setStartEndDate" onClick={this.enableDate}></input> <label htmlFor="setStartEndDate">Set Start and End Date</label>
-                        <DatePicker selected={startDate} onChange={this.updateStartDate} selectsStart startDate={startDate} id="startDate" disabled={!isChecked}/>
-                        <DatePicker selected={endDate} onChange={this.updateEndDate} selectsStart endDate={endDate} minDate={addDays(startDate, 1)} id="endDate" disabled={!isChecked}/>
-                        
-                    </Col>
-                </Row>
-                <Row>
-                    <Col sm="0"><label htmlFor="priority">Priority:</label></Col>
-                    <Col><input type="range" name="priority" min="0" max="30" value={priority} onChange={this.updatePriority}></input> {priority}</Col>
-                </Row>
-                <Row>
-                    <Col sm="0"><label htmlFor="managerPid">Manager:</label></Col>
-                    <Col sm="6"><Manager updateUserId={this.updateUserId} ref={this.updateUser} title="Search Manager"/></Col>
-                </Row>
+            <div className="project-component-container">
+                <table>
+                    <body>
+                    <tr>
+                        <td>Project</td>
+                        <td><input type="text" name="projectName" value={projectName} onChange={this.updateProjectName}></input></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" checked={isChecked} name="setStartEndDate" onClick={this.enableDate}></input>
+                            Set Start and End Date
+                        </td>
+                        <td>
+                            <DatePicker selected={startDate} onChange={this.updateStartDate} selectsStart startDate={startDate} id="startDate" disabled={!isChecked}/>
+                            <DatePicker selected={endDate} onChange={this.updateEndDate} selectsStart endDate={endDate} minDate={addDays(startDate, 1)} id="endDate" disabled={!isChecked}/>
+                        </td>
+                    </tr>    
+                
+                <tr>
+                    <td>Priority:</td>
+                    <td><input type="range" name="priority" min="0" max="30" value={priority} onChange={this.updatePriority}></input> {priority}</td>
+                </tr>
+                <tr>
+                    <td sm="0"><label htmlFor="managerPid">Manager:</label></td>
+                    <td sm="6"><Manager updateUserId={this.updateUserId} ref={this.updateUser} title="Search Manager"/></td>
+                </tr>
               
                {
                 !isEditBtnClicked ? <div className="add-reset-button-component">
@@ -152,8 +156,9 @@ export default class Project extends Component{
 }
                 <hr className="boder-dotted"/>
                 <ProjectList updateProjectProperties = {this.updateProjectProperties} updatedProject = {allProject}/>
-            </Container>
-           
+            </body>
+            </table>
+            </div>          
         );
     }
 }
