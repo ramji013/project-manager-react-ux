@@ -12,15 +12,16 @@ export default class SearchParentTask extends Component{
             allParentTask: [], 
             projectTaskId: "",
             projectTaskName: "",
-            searchProjects: ""
+            searchParentTasks: ""
         }
     }
-    
+
 searchParentTask = (e) => {
-    this.setState({showModal: true})
-    axios.get(config.Task_Url).then(response => {
+    axios.get(config.Parent_Task_Url).then(response => {
         this.setState({allParentTask: response.data})
     })
+    this.setState({showModal: true})
+  
 }
 
 closeModal = (e) => {
@@ -28,7 +29,7 @@ closeModal = (e) => {
 }
 
 updateParentTaskName = (e) => {
-  this.setState({searchProjects: e.target.value})
+  this.setState({searchParentTasks: e.target.value})
 }
 
 resetProject = () => {
@@ -48,7 +49,8 @@ render(){
     const {showModal,allParentTask,parentTaskName,searchParentTasks} = this.state
 
     let filteredData = allParentTask.filter((project)=> {
-        return project.parentTaskName.toLowerCase().search(searchParentTasks)!==-1;
+        if(project.task!=null)
+            return project.task.toLowerCase().search(searchParentTasks)!==-1;
     });
 
     return (
@@ -70,7 +72,7 @@ render(){
                         
                         {
                         filteredData.map((data, idx)=> (
-                            <tr id={idx}><td>{data.parentTaskName}</td><td><button onClick={this.selectParentTask} value={data.parentTaskName} id={data.projectId}>Select</button></td></tr>
+                            <tr id={idx}><td>{data.task}</td><td><button onClick={this.selectParentTask} value={data.task} id={data.id}>Select</button></td></tr>
                         ))
                     }
                     </tbody>

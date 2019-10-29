@@ -63,15 +63,18 @@ export default class CreateTask extends Component{
     }
 
     createTask = (e) => {
-        const {projectId,projectName, task, isParentTask, priority, parentTask, startDate, endDate, userId} = this.state;
-        if(isParentTask){
+        const {projectId,projectName, task, isParentTask, priority, startDate, endDate, userId} = this.state;
+        if(projectId){
             const taskPayLoad = {
                 "taskName" : task,
                 "projectName": projectName,
                 "projectId" : projectId,
-                "isParentTask" : isParentTask
+                "isParentTask" : isParentTask,
+                "priority": priority,
+                "startDate": startDate,
+                "endDate" : endDate,
+                "userId" : userId
             }
-            alert(task + " projectName: " + projectName + " projectId: " + projectId + " isParentTask" + isParentTask);
             createData(config.Task_Url, taskPayLoad);
         }
     }
