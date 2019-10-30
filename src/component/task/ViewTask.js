@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Project from '../search/SearchProject';
-import {getAll} from '../../service/projectmanager';
+import {getAll, updateData} from '../../service/projectmanager';
 import * as config from '../../config/config';
 import axios from 'axios';
 
@@ -9,22 +9,35 @@ export default class ViewTask extends Component{
     constructor(props){
         super(props);
         this.state = {
-            allTask : []
+            allTask : [],
+            projectId : "",
+            projectName: ""
         }
     }
 
-    componentWillMount(){
-        axios.get(config.Task_Url).then(response => {
-            this.setState({allTask: response.data})
-        })
-    }
+    selectProject = (e) => {
+        let task = getAll(config.Task_Url+"?projectId="+e.target.id);
+        this.setState({
+            allTask: task
+           })
+        }
+        // axios.get(config.Task_Url+"?projectId="+e.target.id).then(response => {
+        //     alert(response.data)
+        //     this.setState({
+        //         allTask: response.data
+        //        })
+        // })}
+
+        // endTask = () => {
+        //     updateData
+        // }
 
     render(){
         const {allTask} = this.state;
         return(
             <div>
                 <div className="container">
-                    Project: <Project/>
+                    Project: <Project selectProject= {this.selectProject}/>
                     <label>Sort Task By:</label> <button>Start Date</button> <button>End Date</button>
                     <button>Priority</button> <button>Completed</button>
                     <hr className="boder-dotted"/>
@@ -41,7 +54,7 @@ export default class ViewTask extends Component{
                         <tbody>
                             { 
                                 allTask.map((data, idx) => (
-                            <tr id={idx}>
+                            <tr id={idx+1}>
                                 <td className="task-child-container"><div>{data.taskName}</div></td> 
                                 <td className="task-parent-container"><div>{data.parentTaskName}</div></td>
                                 <td>{data.priority}</td>
@@ -49,7 +62,7 @@ export default class ViewTask extends Component{
                                 <td>{data.endDate}</td>
                                 <td>
                                     <button>Edit</button>
-                                    <button>End Task</button>
+                                    <button onClick={this.endTask}>End Task</button>
                                 </td>
                             </tr>
                              ))
