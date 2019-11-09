@@ -31,12 +31,13 @@ updateFirstName = (e) => {
 }
 
 resetUser = () => {
-    this.setState({userId: ""})
+    this.setState({userId: "", firstName: ""})
 }
 
 showCurrentUser = (data) => {
-    if(data)
+    if(data){
         this.setState({userId: data.userId})
+    }
 }
 
 updateUser = (userId) => {

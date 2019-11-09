@@ -32,8 +32,8 @@ updateParentTaskName = (e) => {
   this.setState({searchParentTasks: e.target.value})
 }
 
-resetProject = () => {
-    this.setState({parentTaskId: ""})
+resetParentTask = () => {
+    this.setState({parentTaskId: "", parentTaskName: ""})
 }
 
 updateParentTask = (parentTaskId) => {
@@ -50,6 +50,7 @@ populateParentTaskFromTask = (data) => {
         this.setState({projectTaskId: data.parentTaskId,
             parentTaskName: data.parentTaskName })
 }
+
 
 render(){
     const {showModal,allParentTask,parentTaskName,searchParentTasks} = this.state
@@ -78,7 +79,7 @@ render(){
                         
                         {
                         filteredData.map((data, idx)=> (
-                            <tr id={idx}><td>{data.task}</td><td><button onClick={this.selectParentTask} value={data.task} id={data.id}>Select</button></td></tr>
+                            <tr id={idx}><td>{data.task}</td><td><button onClick={this.selectParentTask} value={data.task} id={data.parentId}>Select</button></td></tr>
                         ))
                     }
                     </tbody>

@@ -16,7 +16,11 @@ export default class ViewTask extends Component{
             projectName: "",
             isTaskCompleted: false,
             editTask: false,
-            taskId: ""
+            taskId: "",
+            isStartDateSorted: false,
+            isCompletedSorted: false,
+            isEndDateSorted: false,
+            isPrioritySorted: false
         }
     }
 
@@ -31,7 +35,7 @@ export default class ViewTask extends Component{
         endTask = (e) => {
             updateData(config.Task_Complete_Url+"?taskId="+e.target.id)
             const {allTask} = this.state
-            allTask[e.target.value].isTaskCompleted = true
+            allTask[e.target.value].taskCompleted = true
             this.setState({allTask})
         }
 
@@ -43,14 +47,85 @@ export default class ViewTask extends Component{
         this.setState({editTask: false})
     }
 
+
+    sortByCompleted = () => {
+        const {allTask, isCompletedSorted} = this.state;
+        let sortedData;
+        if(!isCompletedSorted){
+            this.setState({isCompletedSorted: true})
+            sortedData = allTask.sort((task1, task2) => {
+            return task1.taskCompleted < task2.taskCompleted ? -1: 1;
+        });
+        }else{
+            this.setState({isCompletedSorted: false})
+            sortedData = allTask.sort((task1, task2) => {
+                return task1.taskCompleted > task2.taskCompleted ? -1: 1;
+        });
+        this.setState({allTask: sortedData});
+    }
+}
+
+
+sortByStartDate = () => {
+    const {allTask, isStartDateSorted} = this.state;
+    let sortedData;
+    if(!isStartDateSorted){
+        this.setState({isStartDateSorted: true})
+        sortedData = allTask.sort((task1, task2) => {
+        return new Date(task2.startDate) - new Date(task1.startDate);
+    });
+    }else{
+        this.setState({isStartDateSorted: false})
+        sortedData = allTask.sort((task1, task2) => {
+            return  new Date(task1.startDate) - new Date(task2.startDate);
+    });
+    this.setState({allTask: sortedData});
+}
+}
+
+sortByEndDate = () => {
+    const {allTask, isEndDateSorted} = this.state;
+    let sortedData;
+    if(!isEndDateSorted){
+        this.setState({isEndDateSorted: true})
+        sortedData = allTask.sort((task1, task2) => {
+        return new Date(task2.endDate) - new Date(task1.startDate);
+    });
+    }else{
+        this.setState({isEndDateSorted: false})
+        sortedData = allTask.sort((task1, task2) => {
+            return  new Date(task1.startDate) - new Date(task2.startDate);
+    });
+    this.setState({allTask: sortedData});
+}
+}
+
+sortByPriority = () => {
+    const {allTask, isPrioritySorted} = this.state;
+    let sortedData;
+    if(!isPrioritySorted){
+        this.setState({isPrioritySorted: true})
+        sortedData = allTask.sort((task1, task2) => {
+        return task1.priority < task2.priority ? -1: 1;
+    });
+    }else{
+        this.setState({isPrioritySorted: false})
+        sortedData = allTask.sort((task1, task2) => {
+            return task1.priority > task2.priority ? -1: 1;
+    });
+    this.setState({allTask: sortedData});
+}
+}
+
+
     render(){
         const {allTask, taskId,editTask} = this.state;
         return(
             <div>
                 <div className="container">
-                    Project: <Project selectProject= {this.selectProject}/>
-                    <label>Sort Task By:</label> <button>Start Date</button> <button>End Date</button>
-                    <button>Priority</button> <button>Completed</button>
+                    <Project selectProject= {this.selectProject}/>
+                    <label>Sort Task By:</label> <button onClick={this.sortByStartDate}>Start Date</button> <button onClick={this.sortByEndDate}>End Date</button>
+                    <button onClick={this.sortByPriority}>Priority</button> <button onClick={this.sortByCompleted}>Completed</button>
                     <hr className="boder-dotted"/>
 
                     <table cellPadding="10">
@@ -73,7 +148,7 @@ export default class ViewTask extends Component{
                                 <td>{data.endDate}</td>
                                 <td>
                                 {
-                                    !data.isTaskCompleted?
+                                    !data.taskCompleted?
                                     <div>
                                         <button id={idx} onClick={(e)=> this.setState({editTask: true, taskId: idx})}>Edit</button>
                                         {editTask && idx===taskId ? 
@@ -85,12 +160,12 @@ export default class ViewTask extends Component{
                                       <Modal.Body>
                                           <EditTask isUpdate={true} taskData = {allTask[idx]} closeModal= {this.closeModal} />
                                       </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={this.closeModal}>
-               Close
-            </Button>
-            </Modal.Footer>
-        </Modal>: "" }
+                                        <Modal.Footer>
+                                        <Button variant="secondary" onClick={this.closeModal}>
+                                        Close
+                                        </Button>
+                                        </Modal.Footer>
+                                    </Modal>: "" }
                                         <button id={data.taskId} value={idx} onClick={this.endTask}>End Task</button>
                                     </div>: 
                                     <div>Task Completed</div>

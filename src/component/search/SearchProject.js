@@ -32,7 +32,7 @@ updateProjectName = (e) => {
 }
 
 resetProject = () => {
-    this.setState({projectId: ""})
+    this.setState({projectId: "", projectName: ""})
 }
 
 updateProject = (projectId) => {

@@ -20,7 +20,6 @@ export default class Task extends Component{
             task: "",
             isParentTask: false,
             priority: 0,
-            parentTask: "",
             startDate : new Date(),
             endDate: new Date(),
             userId: "",
@@ -32,6 +31,20 @@ export default class Task extends Component{
         this.populateParentTaskFromTask = React.createRef();
         this.showCurrentUser = React.createRef();
 }
+
+    reset = () => {
+        
+            this.setState({ projectName : "",
+            priority: 0,
+            task: "",
+            startDate : null,
+            endDate: null, isChecked: false,
+            managerId: ""})
+            this.updateProjectFromTask.current.resetProject();
+            this.populateParentTaskFromTask.current.resetParentTask();
+            this.showCurrentUser.current.resetUser();
+    }
+
     componentDidMount(){
         const {taskData} = this.props;
         this.updateProjectFromTask.current.updateProjectFromTask(taskData);
@@ -96,6 +109,7 @@ export default class Task extends Component{
             this.props.taskData.startDate = this.getDateFormat(startDate);
             this.props.taskData.endDate = this.getDateFormat(endDate);
             this.props.taskData.priority = priority;
+            this.reset();
             this.props.closeModal();
         }
     }
@@ -107,7 +121,10 @@ export default class Task extends Component{
         return [year, month, day].join('-');
     }   
 
-    selectParentTask = (e) => {}
+    selectParentTask = (e) => {
+        this.setState({parentTaskId: e.target.id ,
+        parentTaskName: e.target.value })
+    }
 
     updateParentTask = () => {
         const{isParentTask} = this.state;
@@ -124,7 +141,7 @@ export default class Task extends Component{
     }
 
     createTask = (e) => {
-        const {projectId,projectName, task, isParentTask, priority, startDate, endDate, userId} = this.state;
+        const {projectId,projectName, task, isParentTask, priority, startDate, endDate, userId, parentTaskId} = this.state;
         if(projectId){
             const taskPayLoad = {
                 "taskName" : task,
@@ -134,21 +151,11 @@ export default class Task extends Component{
                 "priority": priority,
                 "startDate": startDate,
                 "endDate" : endDate,
-                "userId" : userId
+                "userId" : userId,
+                "parentTaskId" : parentTaskId
             }
             createData(config.Task_Url, taskPayLoad);
-
-            this.setState({
-                projectName: "",
-                projectId: "",
-                task: "",
-                isParentTask: false,
-                priority: 0,
-                parentTask: "",
-                startDate : new Date(),
-                endDate: new Date(),
-                userId: ""
-            })
+            this.reset();
         }
     }
 
@@ -178,7 +185,7 @@ export default class Task extends Component{
                             !isUpdate ?
                         <div>
                             <button onClick={this.createTask}>Add</button>
-                            <button>Reset</button>
+                            <button onClick={this.reset}>Reset</button>
                         </div>:
                         <div>
                             <button onClick={this.updateTask}>Update</button>
