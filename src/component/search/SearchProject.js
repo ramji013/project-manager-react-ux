@@ -44,9 +44,14 @@ selectProject = (e) => {
     this.props.selectProject(e);
 }
 
+updateProjectFromTask = (data) => {
+    if(data)
+         this.setState({projectName: data.projectName, projectId: data.projectId})
+}
+
 render(){
     const {showModal,allProject,projectName,searchProjects} = this.state
-
+    
     let filteredData = allProject.filter((project)=> {
         return project.projectName.toLowerCase().search(searchProjects)!==-1;
     });

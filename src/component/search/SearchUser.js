@@ -34,6 +34,11 @@ resetUser = () => {
     this.setState({userId: ""})
 }
 
+showCurrentUser = (data) => {
+    if(data)
+        this.setState({userId: data.userId})
+}
+
 updateUser = (userId) => {
     this.setState({userId})
 }

@@ -45,10 +45,16 @@ selectParentTask = (e) => {
     this.props.selectParentTask(e);
 }
 
+populateParentTaskFromTask = (data) => {
+    if(data)
+        this.setState({projectTaskId: data.parentTaskId,
+            parentTaskName: data.parentTaskName })
+}
+
 render(){
     const {showModal,allParentTask,parentTaskName,searchParentTasks} = this.state
 
-    let filteredData = allParentTask.filter((project)=> {
+    let filteredData = allParentTask.filter((project) => {
         if(project.task!=null)
             return project.task.toLowerCase().search(searchParentTasks)!==-1;
     });

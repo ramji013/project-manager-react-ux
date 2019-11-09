@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import Project from '../search/SearchProject';
-import {getAll, updateData} from '../../service/projectmanager';
+import {updateData} from '../../service/projectmanager';
 import * as config from '../../config/config';
 import axios from 'axios';
+import EditTask  from '../task/Task';
+import {Modal, Button} from 'react-bootstrap';
 
 export default class ViewTask extends Component{
 
@@ -11,29 +13,38 @@ export default class ViewTask extends Component{
         this.state = {
             allTask : [],
             projectId : "",
-            projectName: ""
+            projectName: "",
+            isTaskCompleted: false,
+            editTask: false,
+            taskId: ""
         }
     }
 
     selectProject = (e) => {
-        let task = getAll(config.Task_Url+"?projectId="+e.target.id);
-        this.setState({
-            allTask: task
-           })
-        }
-        // axios.get(config.Task_Url+"?projectId="+e.target.id).then(response => {
-        //     alert(response.data)
-        //     this.setState({
-        //         allTask: response.data
-        //        })
-        // })}
+        axios.get(config.Task_Url+"?projectId="+e.target.id).then(response => {
+            alert(response.data)
+            this.setState({
+                allTask: response.data
+               })
+        })}
 
-        // endTask = () => {
-        //     updateData
-        // }
+        endTask = (e) => {
+            updateData(config.Task_Complete_Url+"?taskId="+e.target.id)
+            const {allTask} = this.state
+            allTask[e.target.value].isTaskCompleted = true
+            this.setState({allTask})
+        }
+
+    editTask = () => {
+        this.setState({isEdited: true})
+    }       
+
+    closeModal = (e) => {
+        this.setState({editTask: false})
+    }
 
     render(){
-        const {allTask} = this.state;
+        const {allTask, taskId,editTask} = this.state;
         return(
             <div>
                 <div className="container">
@@ -61,9 +72,30 @@ export default class ViewTask extends Component{
                                 <td>{data.startDate}</td>
                                 <td>{data.endDate}</td>
                                 <td>
-                                    <button>Edit</button>
-                                    <button onClick={this.endTask}>End Task</button>
-                                </td>
+                                {
+                                    !data.isTaskCompleted?
+                                    <div>
+                                        <button id={idx} onClick={(e)=> this.setState({editTask: true, taskId: idx})}>Edit</button>
+                                        {editTask && idx===taskId ? 
+
+                                        <Modal show={editTask} onHide={this.closeModal} size="lg" >
+                                        <Modal.Header closeButton>
+                                        <Modal.Title>Update Task</Modal.Title>
+                                      </Modal.Header>
+                                      <Modal.Body>
+                                          <EditTask isUpdate={true} taskData = {allTask[idx]} closeModal= {this.closeModal} />
+                                      </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={this.closeModal}>
+               Close
+            </Button>
+            </Modal.Footer>
+        </Modal>: "" }
+                                        <button id={data.taskId} value={idx} onClick={this.endTask}>End Task</button>
+                                    </div>: 
+                                    <div>Task Completed</div>
+                                }
+                               </td>
                             </tr>
                              ))
                             }
