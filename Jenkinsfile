@@ -1,26 +1,18 @@
 pipeline {
-    agent any
-
-    tools {
-           maven 'maven_home'
-    }
-
-    stages{
-        stage('Compile'){
-            steps{
-                  bat 'mvn clean compile'
-            }
-        }
-        stage('Unit Testing'){
-            steps{
-                  bat 'mvn test'
-            }
-        }
-        stage('Deploy App'){
-            steps{
-                  bat 'mvn deploy'
-           }
+    agent {
+        docker {
+            image 'node:6-alpine'
+            args '-p 3000:3000'
         }
     }
-
+    environment {
+        CI = 'true'
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'npm install'
+            }
+        }
+    }
 }
