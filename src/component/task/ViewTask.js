@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Project from '../search/SearchProject';
-import {updateData} from '../../service/projectmanager';
+import {updateData,deleteData} from '../../service/projectmanager';
 import * as config from '../../config/config';
 import axios from 'axios';
 import EditTask  from '../task/Task';
@@ -26,7 +26,6 @@ export default class ViewTask extends Component{
 
     selectProject = (e) => {
         axios.get(config.Task_Url+"?projectId="+e.target.id).then(response => {
-            alert(response.data)
             this.setState({
                 allTask: response.data
                })
@@ -117,6 +116,13 @@ sortByPriority = () => {
 }
 }
 
+deleteTask = (e) => {
+    const {allTask} = this.state;
+    allTask.splice(e.target.id,1);
+    this.setState({allTask});
+    deleteData(config.Task_Url+"?taskId="+e.target.value);
+}
+
 
     render(){
         const {allTask, taskId,editTask} = this.state;
@@ -167,6 +173,7 @@ sortByPriority = () => {
                                         </Modal.Footer>
                                     </Modal>: "" }
                                         <button id={data.taskId} value={idx} onClick={this.endTask}>End Task</button>
+                                        <button id={idx} value={data.taskId} onClick={this.deleteTask}>Delete Task</button>
                                     </div>: 
                                     <div>Task Completed</div>
                                 }
